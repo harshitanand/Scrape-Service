@@ -1,7 +1,6 @@
 var request = require('request')
-  async = require('async')
-  exec = require('child_process').exec
   cheerio = require('cheerio')
+  exec = require('child_process').exec
   fs = require('fs');
   url = process.argv[2] || "https://medium.com/"
 
@@ -37,32 +36,29 @@ function makeRequest (url, method, pool, callback){
 };
 
 function saveData (list, data, callback){
-  if (list)
-  {
-    fs.appendFile('data/temp-async.csv', data, function(err){
-      if (err) 
-        callback(err);
-      callback(err, list)
-    });
-  }
+  fs.appendFile('data/temp-sync.csv', data, function(err){
+    if (err) 
+      callback(err);
+    callback(err, list);
+  });
 };
 
-function makeNestedRequests (links, callback){
-  async.map(links, function(link, _callback){
-    url = link;
-    async.waterfall([setParams, makeRequest, saveData], function(err, res){
-      if (err)
-      _callback(err);
-      else
-        _callback(err, res);
-    });
-  }, function(err, results){
-      callback(err, results);
-  });    
-};
-
-exec("rm -rf data/temp-async.csv");
-async.waterfall([setParams, makeRequest, saveData, makeNestedRequests], function(err, res){
-  console.log("All URLS saved succesfully");
+exec("rm -rf data/temp-sync.csv");
+setParams(function(err, web, meth, conn){
+  makeRequest(web,meth,conn, function(err, list, links){
+    if(links){
+      saveData(list, links, function(err, res){
+        res.forEach(function(uri){
+          makeRequest(uri,meth,conn, function(err, arr, data){
+            if(data){
+              saveData(arr, data, function(err, res){
+                console.log(res);
+              });
+            }
+          })
+        });
+      });
+      console.log("All HyperLinks saved Sucessfully");
+    }
+  });
 });
-
