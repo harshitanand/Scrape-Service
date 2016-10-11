@@ -9,18 +9,18 @@ Just run following command to begin
   npm install
   ```
 ## Running and Viewing results
-Saving all hyperliks
-  ```
-  node ScrapeAsync.js or node ScrapeAsync.js <website url>
-  
-  node Scraper.js or node Scraper.js <website url>
-  ```
+Saving all hyperlinks
+ ```
+ node ScrapeAsync.js or node ScrapeAsync.js <website url>
+ 
+ node Scraper.js or node Scraper.js <website url>
+ ```
 Viewing all hyperlinks stored
-  ```
-  cd data
-  cat temp-sync.csv
-  cat temp-async.csv
-  ```
+ ```
+ cd data
+ cat temp-sync.csv
+ cat temp-async.csv
+ ```
 ## License
 >You can check out the full license [here](https://github.com/harshitanand/Scrape-Service/blob/master/LICENSE)
 
