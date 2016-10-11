@@ -3,7 +3,7 @@ var request = require('request')
   exec = require('child_process').exec
   cheerio = require('cheerio')
   fs = require('fs');
-  url = "https://medium.com/"
+  url = process.argv[2] || "https://medium.com/"
 
 function setParams (callback){
   var main = url,
@@ -50,15 +50,13 @@ function saveData (data, callback){
 
 function makeNestedRequests (links, callback){
   async.map(links, function(link, _callback){
-    if(link!=="https://medium.com/"){
-      url = link;
-      async.waterfall([setParams, makeRequest, saveData], function(err, res){
-        if (err)
-        _callback(err);
-        else
-          _callback(err, res);
-      });
-    }
+    url = link;
+    async.waterfall([setParams, makeRequest, saveData], function(err, res){
+      if (err)
+      _callback(err);
+      else
+        _callback(err, res);
+    });
   }, function(err, results){
       callback(err, results);
   });    
