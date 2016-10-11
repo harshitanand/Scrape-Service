@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/harshitanand/Scrape-Service/issues"
   },
-  "homepage": "https://github.com/harshitanand/Scrape-Service#readme"
+  "homepage": "https://github.com/harshitanand/Scrape-Service#readme",
+  "dependencies": {
+    "csv-write-stream": "^2.0.0"
+  }
 }
