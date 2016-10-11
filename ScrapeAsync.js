@@ -1,8 +1,8 @@
 var request = require('request')
   async = require('async')
+  exec = require('child_process').exec
   cheerio = require('cheerio')
   fs = require('fs');
-  readline = require('readline')
   url = "https://medium.com/"
 
 function setParams (callback){
@@ -19,9 +19,8 @@ function makeRequest (url, method, pool, callback){
       links = $('a');
       data = []
       $(links).each(function(i, link){
-        var uri = $(link).attr('href')
-        var text = $(link).text()
-        if(uri != url)
+        var uri = $(link).attr('href');
+        if(uri !== url)
           data.push(uri);
       });
       if (data.length > 0)
@@ -35,10 +34,10 @@ function makeRequest (url, method, pool, callback){
 };
 
 function saveData (data, callback){
-  if (data.length>0)
+  if (data)
   {
     async.map(data, function(uri, _callback){
-      fs.appendFile('temp.csv', uri+'\r\n', function(err){
+      fs.appendFile('temp-async.csv', uri+'\r\n', function(err){
         if (err) 
           _callback(err);
         _callback(err, uri)
@@ -55,7 +54,7 @@ function makeNestedRequests (links, callback){
       url = link;
       async.waterfall([setParams, makeRequest, saveData], function(err, res){
         if (err)
-          _callback(err);
+        _callback(err);
         else
           _callback(err, res);
       });
@@ -65,7 +64,8 @@ function makeNestedRequests (links, callback){
   });    
 };
 
+exec("rm -rf temp-async.csv");
 async.waterfall([setParams, makeRequest, saveData, makeNestedRequests], function(err, res){
-    console.log("All URLS saved succesfully");
+  console.log("All URLS saved succesfully");
 });
 

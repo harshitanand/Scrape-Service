@@ -1,7 +1,8 @@
 var request = require('request')
   cheerio = require('cheerio')
+  exec = require('child_process').exec
   fs = require('fs');
-  url = "https://medium.com/"
+  url = process.argv[2] || "https://medium.com/"
 
 function setParams (callback){
   var main = url,
@@ -18,7 +19,7 @@ function makeRequest (url, method, pool, callback){
       data = [];
       $(links).each(function(i, link){
         var uri = $(link).attr('href');
-        if(uri != url)
+        if(uri !== url)
           data.push(uri);
       });
       if (data.length > 0)
@@ -32,30 +33,17 @@ function makeRequest (url, method, pool, callback){
 };
 
 function saveData (uri, callback){
-  fs.appendFile('tem.csv', uri+'\r\n', function(err){
+  fs.appendFile('temp-sync.csv', uri+'\r\n', function(err){
     if (err) 
       callback(err);
     callback(err, uri);
   });
 };
 
-/*function makeNestedRequests (links, callback){
-  links, function(link, _callback){
-    url = link;
-    async.waterfall([setParams, makeRequest, saveData], function(err, res){
-      if (err)
-        _callback(err);
-      else
-        _callback(err, res);
-    });
-  }, function(err, results){
-      callback(err, results);
-  });    
-};*/
-
+exec("rm -rf temp-sync.csv");
 setParams(function(err, web, meth, conn){
   makeRequest(web,meth,conn, function(err, links){
-    if(links.length>0){
+    if(links){
       links.forEach(function(link){
         saveData(link, function(err, res){
           console.log(res);    
@@ -70,7 +58,7 @@ setParams(function(err, web, meth, conn){
           });
         });
       });
+      console.log("All HyperLinks saved Sucessfully");
     }
   });
-  console.log("All HyperLinks saved Sucessfully");
 });
