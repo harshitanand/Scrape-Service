@@ -3,7 +3,7 @@ var cheerio = require('cheerio');
 var searchTerm = 'screen+scraping';
 //var url = 'http://www.bing.com/search?q=' + searchTerm;
 var url = "https://medium.com/"
-request(url, function(err, resp, body){
+request({'url':url, 'method':'GET', 'pool.maxSockets': 5}, function(err, resp, body){
   $ = cheerio.load(body);
   links = $('a'); //jquery get all hyperlinks
   $(links).each(function(i, link){
