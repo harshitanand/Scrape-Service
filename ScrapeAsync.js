@@ -52,7 +52,7 @@ function makeNestedRequests (links, callback){
     url = link;
     async.waterfall([setParams, makeRequest, saveData], function(err, res){
       if (err)
-      _callback(err);
+        _callback(err);
       else
         _callback(err, res);
     });
