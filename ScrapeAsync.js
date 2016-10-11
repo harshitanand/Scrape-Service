@@ -17,33 +17,32 @@ function makeRequest (url, method, pool, callback){
     if(body){
       $ = cheerio.load(body);
       links = $('a');
-      data = []
+      toSave = "";
+      data = [];
       $(links).each(function(i, link){
         var uri = $(link).attr('href');
-        if(uri !== url)
+        if(uri !== url){
+          toSave = toSave + uri + '\r\n';  
           data.push(uri);
+        }
       });
       if (data.length > 0)
-        callback(null, data);
+        callback(null, data, toSave);
       else
         callback("Not Sufficient links found");
     }
     else
-      callback(null, []);
+      callback(null, [], toSave);
   });
 };
 
-function saveData (data, callback){
-  if (data)
+function saveData (list, data, callback){
+  if (list)
   {
-    async.map(data, function(uri, _callback){
-      fs.appendFile('temp-async.csv', uri+'\r\n', function(err){
-        if (err) 
-          _callback(err);
-        _callback(err, uri)
-      });
-    }, function(err, result){
-          callback(err, result);
+    fs.appendFile('temp-async.csv', data, function(err){
+      if (err) 
+        callback(err);
+      callback(err, list)
     });
   }
 };

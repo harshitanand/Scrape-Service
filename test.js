@@ -17,35 +17,37 @@ function makeRequest (url, method, pool, callback){
     if(body){
       $ = cheerio.load(body);
       links = $('a');
-      data = []
+      data = "";
+      arr = []
       $(links).each(function(i, link){
-        var uri = $(link).attr('href')
-        var text = $(link).text()
-        if(uri != url)
-          data.push(uri);
+        var uri = $(link).attr('href');
+        if(uri != url){
+          data = data + uri + "\r\n";
+          arr.push(uri);
+        }
       });
-      if (data.length > 0)
-        callback(null, data);
+      if (arr.length > 0)
+        callback(null, data, arr);
       else
         callback("Not Sufficient links found");
     }
     else
-      callback(null, []);
+      callback(null, "", []);
   });
 };
 
-function saveData (data, callback){
+function saveData (data, list, callback){
   if (data.length>0)
   {
-    async.map(data, function(uri, _callback){
-      fs.appendFile('temp.csv', uri+'\r\n', function(err){
+    //async.map(data, function(uri, _callback){
+      fs.appendFile('temp.csv', data, function(err){
         if (err) 
-          _callback(err);
-        _callback(err, uri)
+          callback(err);
+        callback(err, list)
       });
-    }, function(err, result){
-          callback(err, result);
-    });
+    //}, function(err, result){
+    //      callback(err, result);
+    //});
   }
 };
 
@@ -124,4 +126,3 @@ function test (links, callback){
 async.waterfall([setParams, makeRequest, saveData, test], function(err, res){
     console.log("All URLS saved succesfully");
 });
-

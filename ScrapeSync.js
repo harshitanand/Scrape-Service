@@ -16,46 +16,46 @@ function makeRequest (url, method, pool, callback){
     if(body){
       $ = cheerio.load(body);
       links = $('a');
+      toSave = "";
       data = [];
       $(links).each(function(i, link){
         var uri = $(link).attr('href');
-        if(uri !== url)
+        if(uri !== url){
+          toSave = toSave + uri + '\r\n';  
           data.push(uri);
+        }
       });
       if (data.length > 0)
-        callback(null, data);
+        callback(null, data, toSave);
       else
         callback("Not Sufficient links found");
     }
     else
-      callback(null, []);
+      callback(null, [], toSave);
   });
 };
 
-function saveData (uri, callback){
-  fs.appendFile('temp-sync.csv', uri+'\r\n', function(err){
+function saveData (list, data, callback){
+  fs.appendFile('temp-sync.csv', data, function(err){
     if (err) 
       callback(err);
-    callback(err, uri);
+    callback(err, list);
   });
 };
 
 exec("rm -rf temp-sync.csv");
 setParams(function(err, web, meth, conn){
-  makeRequest(web,meth,conn, function(err, links){
+  makeRequest(web,meth,conn, function(err, list, links){
     if(links){
-      links.forEach(function(link){
-        saveData(link, function(err, res){
-          console.log(res);    
-          makeRequest(link,meth,conn, function(err, data){
-          if(data){
-            data.forEach(function(uri){
-              saveData(uri, function(err, res){
+      saveData(list, links, function(err, res){
+        res.forEach(function(uri){
+          makeRequest(uri,meth,conn, function(err, arr, data){
+            if(data){
+              saveData(arr, data, function(err, res){
                 console.log(res);
               });
-            });
-          }
-          });
+            }
+          })
         });
       });
       console.log("All HyperLinks saved Sucessfully");
