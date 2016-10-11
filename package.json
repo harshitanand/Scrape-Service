@@ -1,0 +1,19 @@
+{
+  "name": "scrape-service",
+  "version": "1.0.0",
+  "description": "A Scraper Service written to fetch all links on a remote url",
+  "main": "test.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harshitanand/Scrape-Service.git"
+  },
+  "author": "Harshit Anand",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harshitanand/Scrape-Service/issues"
+  },
+  "homepage": "https://github.com/harshitanand/Scrape-Service#readme"
+}
