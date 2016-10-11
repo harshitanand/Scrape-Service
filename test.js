@@ -39,15 +39,11 @@ function makeRequest (url, method, pool, callback){
 function saveData (data, list, callback){
   if (data.length>0)
   {
-    //async.map(data, function(uri, _callback){
-      fs.appendFile('temp.csv', data, function(err){
-        if (err) 
-          callback(err);
-        callback(err, list)
-      });
-    //}, function(err, result){
-    //      callback(err, result);
-    //});
+    fs.appendFile('temp.csv', data, function(err){
+      if (err) 
+        callback(err);
+      callback(err, list)
+    });
   }
 };
 

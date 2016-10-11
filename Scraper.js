@@ -36,14 +36,14 @@ function makeRequest (url, method, pool, callback){
 };
 
 function saveData (list, data, callback){
-  fs.appendFile('temp-sync.csv', data, function(err){
+  fs.appendFile('data/temp-sync.csv', data, function(err){
     if (err) 
       callback(err);
     callback(err, list);
   });
 };
 
-exec("rm -rf temp-sync.csv");
+exec("rm -rf data/temp-sync.csv");
 setParams(function(err, web, meth, conn){
   makeRequest(web,meth,conn, function(err, list, links){
     if(links){

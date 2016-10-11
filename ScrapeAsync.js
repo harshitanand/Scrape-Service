@@ -39,7 +39,7 @@ function makeRequest (url, method, pool, callback){
 function saveData (list, data, callback){
   if (list)
   {
-    fs.appendFile('temp-async.csv', data, function(err){
+    fs.appendFile('data/temp-async.csv', data, function(err){
       if (err) 
         callback(err);
       callback(err, list)
@@ -61,7 +61,7 @@ function makeNestedRequests (links, callback){
   });    
 };
 
-exec("rm -rf temp-async.csv");
+exec("rm -rf data/temp-async.csv");
 async.waterfall([setParams, makeRequest, saveData, makeNestedRequests], function(err, res){
   console.log("All URLS saved succesfully");
 });
