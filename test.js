@@ -49,7 +49,63 @@ function saveData (data, callback){
   }
 };
 
-function makeNestedRequests (links, callback){
+function makeNestedRequest (links, callback){
+  async.map(links, function(link, _callback){    
+    var url = link;  
+    function doreq(__callback){
+      console.log("here",url);
+      request({'url':url, 'method':"GET", 'pool.maxSockets':5}, function(err, resp, body){
+        if(body){
+          $ = cheerio.load(body);
+          links = $('a');
+          data = []
+          $(links).each(function(i, link){
+            var uri = $(link).attr('href')
+            var text = $(link).text()
+            if(uri!==url || uri!=='https://medium.com/')
+              data.push(uri);
+          });
+          if(data.length > 1)
+            __callback(null, data);
+          else
+            __callback(null);
+        }
+        else
+          __callback(null, []);
+      });    
+    };
+
+    function savelink(data, __callback){
+      if (data.length>1)
+      {
+        console.log(data);
+        async.map(data, function(uri, cb){
+          fs.appendFile('temp.csv', uri+'\r\n', function(err){
+            if (err) 
+              cb(err);
+            cb(err, uri)
+          });
+        }, function(err, result){
+              console.log(err, result);
+              __callback(err, result);
+        });
+      }
+    }
+    
+    if(link!=="https://medium.com/"){
+      async.waterfall([doreq, savelink], function(err, res){
+        if (err)
+          _callback(err);
+        else
+          _callback(err, res);
+      })
+    }
+  },function(err, results){
+      callback(err, results);
+  });
+};
+
+function test (links, callback){
   async.map(links, function(link, _callback){
     if(link!=="https://medium.com/"){
       url = link;
@@ -65,7 +121,7 @@ function makeNestedRequests (links, callback){
   });    
 };
 
-async.waterfall([setParams, makeRequest, saveData, makeNestedRequests], function(err, res){
+async.waterfall([setParams, makeRequest, saveData, test], function(err, res){
     console.log("All URLS saved succesfully");
 });
 
