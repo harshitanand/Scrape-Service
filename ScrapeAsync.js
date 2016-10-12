@@ -21,7 +21,7 @@ function makeRequest (url, method, pool, callback){
       data = [];
       $(links).each(function(i, link){
         var uri = $(link).attr('href');
-        if(uri && uri != url && (uri.startsWith('https://') || uri.startsWith('http://'))){
+        if(uri && uri != url && (uri.startsWith('https://') || uri.startsWith('http://') || uri.startsWith('//'))){
           toSave = toSave + uri + '\r\n';  
           data.push(uri);
         }
