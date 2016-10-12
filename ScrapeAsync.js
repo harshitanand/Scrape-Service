@@ -65,4 +65,3 @@ exec("rm -rf data/temp-async.csv");
 async.waterfall([setParams, makeRequest, saveData, makeNestedRequests], function(err, res){
   console.log("All URLS saved succesfully");
 });
-
