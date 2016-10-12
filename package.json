@@ -18,6 +18,7 @@
   "homepage": "https://github.com/harshitanand/Scrape-Service#readme",
   "dependencies": {
     "async": "^2.0.1",
-    "csv-write-stream": "^2.0.0"
+    "cheerio": "^0.22.0",
+    "request": "^2.75.0"
   }
 }
