@@ -9,11 +9,11 @@ Just run following command to begin
 npm install
 ```
 ## Running and Viewing results
-Saving all hyperlinks
+Saving all hyperlinks according to depth level setted
 ```
-node ScrapeAsync.js or node ScrapeAsync.js <website url>
+node ScrapeAsync.js or node ScrapeAsync.js <website url> <depth Level>
  
-node Scraper.js or node Scraper.js <website url>
+node Scraper.js or node Scraper.js <website url> <depth level>
 ```
 Viewing all hyperlinks stored
 ```
